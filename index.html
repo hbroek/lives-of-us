@@ -255,7 +255,7 @@
       </form>
       <table data-if="isEdit">
         <tbody data-for="event:sortedEntries(lifeEvents)">
-          <tr data-if="editRow.index!==event.index">
+          <tr data-if="editRow.index!==event.index">  <!-- Read-only row -->
             <td data-text="${event.item[0]}"></td>
             <td style="width:100%" colspan="2" data-text="${event.item[1]}"></td>
             <td class="last">
@@ -265,7 +265,7 @@
                 data-action="if (confirm(`Remove event ${event.item[0]}-${event.item[1]}`)){delete lifeEvents[event.item[0]];saveLifeEvents(dobString, name, lifeEvents)}">🗑️</button>
             </td>
           </tr>
-          <tr data-if="editRow.index===event.index">
+          <tr data-if="editRow.index===event.index"> <!-- Editable row -->
             <td><input type="date" data-value="editRow.date" /></td>
             <td>
               <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)" data-on-change="editRow.title=editRow.emoji+' '+editRow.title">
@@ -275,7 +275,7 @@
             <td style="width:100%"><input type="text" data-value="editRow.title" placeholder="Enter event title"/></td>
             <td class="last">
               <button
-                data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate];saveLifeEvents(dobString, name, lifeEvents)}">💾</button>
+                data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate]};saveLifeEvents(dobString, name, lifeEvents)">💾</button>
               <button data-action="editRow.index=-1">✖️</button>
             </td>
           </tr>
@@ -359,6 +359,7 @@
   }
 
   function saveLifeEvents(dob, name, eventsObject) {
+    console.log('Save lifeevents', eventsObject);
     localStorage.setItem('lifeEvents', generateUrl(dob, name, eventsObject));
     window.history.replaceState({}, document.title, location.pathname);
   }
