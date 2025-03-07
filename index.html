@@ -206,9 +206,12 @@
 
 <body>
   <header>
-      <h1 data-if="name==null||name==''">To start enter your name and date of birth</h1>
-      <h1 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h1>
-      <form>
+      <h1>Lives of Us
+        <small>- an overview of your life in weeks</small><button type="button" style="float:inline-end;" data-action="isEdit=!isEdit">⚙️</button>
+      </h1>
+      <h2 data-if="name==null||name==''">To start enter your name and date of birth</h2>
+      <h2 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h2>
+      <form data-if="isEdit">
         <fieldset>
           <label>
             Date of Birth
@@ -222,7 +225,7 @@
         <button data-if="dobString!=null" type="button" data-action="openDialog=true;editRow.date=dobString;editRow.emoji=editRow.title=''">Add Event</button>
         <button data-if="dobString!=null" type="button" data-action="if (confirm('Remove all data?')){dobString=null;name=null;lifeEvents=[];localStorage.removeItem('lifeEvents')}">Start over</button>
       </form>
-      <table>
+      <table data-if="isEdit">
         <tbody data-for="event:sortedEntries(lifeEvents)">
           <tr data-if="editRow.index!==event.index">
             <td data-text="${event.item[0]}"></td>
@@ -250,7 +253,6 @@
           </tr>
         </tbody>
       </table>
-    </details>
   </header>
   <main>
     <section data-if="dobString!=null" xdata-interval="10:counter<myweeks.length:counter++" data-for="w:myweeks">
@@ -331,7 +333,7 @@
 
   function saveLifeEvents(dob, name, eventsObject) {
     localStorage.setItem('lifeEvents', generateUrl(dob, name, eventsObject));
-    location=location.origin+location.pathname; //Remove parameters as state is now stored locally
+    //location=location.origin+location.pathname; //Remove parameters as state is now stored locally
   }
 
   const editRow = {
@@ -345,6 +347,7 @@
   let dobString = null;
   let name = null;
   let lifeEvents = null;
+  let isEdit = false;
 
   let searchParams = new URLSearchParams(location.search)
   if (searchParams.get('dob') !== null) {
@@ -426,6 +429,7 @@
     //   '2023-12-08': '🍼 Cecilia',
     // }
     lifeEvents =[]
+    isEdit = true;
   }
   let counter = 0;
   const emojiSelect = {
