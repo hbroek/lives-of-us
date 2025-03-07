@@ -223,7 +223,7 @@
 
 <body>
   <header>
-      <h1><span class="hero">Lives of Us</span>
+      <h1><a style="all:unset;cursor:pointer" data-attr-href="${location.origin+location.pathname}"><span class="hero">Lives of Us</span></a>
         <small>- an overview of your life in weeks</small>
         <div role="group" style="display:inline !important;float:inline-end;width:unset;">
           <button data-if="dobString!=null" type="button" data-timer="1500:copied:copied=false;"
@@ -234,7 +234,7 @@
             class="animate"
           </button>
           <button type="button" data-action="isEdit=!isEdit">⚙️</button>
-        </button>
+        </div>
   
       </h1>
       <h2 data-if="name==null||name==''">To start enter your name and date of birth</h2>
@@ -359,7 +359,7 @@
 
   function saveLifeEvents(dob, name, eventsObject) {
     localStorage.setItem('lifeEvents', generateUrl(dob, name, eventsObject));
-    //location=location.origin+location.pathname; //Remove parameters as state is now stored locally
+    window.history.replaceState({}, document.title, location.pathname);
   }
 
   const editRow = {
@@ -414,8 +414,9 @@
     }
   }
   else {
-    // dobString = '1965-01-13'
-    // name = 'Henry van den Broek';
+    dobString = '1965-01-13'
+    name = 'Henry van den Broek';
+    lifeEvents =[]
     // lifeEvents = {
     //   '1965-01-13': 'Amsterdam',
     //   '1966-09-06': '🍼 Eric',
@@ -453,9 +454,9 @@
     //   '2020-03-13': '🚚 Conway',
     //   '2022-01-10': '🌄 Retired',
     //   '2022-08-22': '🍼 Isabella',
+    //   '2023-11-02': '✝️ Pa',
     //   '2023-12-08': '🍼 Cecilia',
     // }
-    lifeEvents =[]
     isEdit = true;
   }
   let counter = 0;
