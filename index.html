@@ -287,7 +287,7 @@
       <div data-class="event:hasEvent(w, myweeks)"
         data-action="openDialog=true;editRow.date=date2String(w.item);editRow.emoji=editRow.title=''"
         data-attr-class="week d${parseInt(calculateAge(dob, endWeek(w.item))/10)}"
-        data-attr-title="${w.item.toLocaleDateString()}" data-text="${getEvent(w, myweeks)}"></div>
+        data-attr-title="${w.item.toLocaleDateString()} click to add Event." data-text="${getEvent(w, myweeks)}"></div>
     </section>
   </main>
   <footer>
@@ -314,6 +314,7 @@
             Event Name
             <input type="text" name="title" placeholder="Event title" data-value="editRow.title" />
           </label>
+          <small>Add any emoji with &lt;control>&ltcmd>&lt;space> or &ltwindows>&lt+></small>
         </fieldset>
         <footer>
           <button type="button" class="secondary" data-action="openDialog=false">
