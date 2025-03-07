@@ -194,19 +194,40 @@
     select {
       margin-bottom: initial !important;
     }
+
+    td.last {
+      text-align:end;
+    }
+    td {
+      text-wrap: nowrap;
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <details>
-      <summary data-text="${name}'s life in weeks"></summary>
+      <h1 data-if="name==null||name==''">To start enter your name and date of birth</h1>
+      <h1 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h1>
+      <form>
+        <fieldset>
+          <label>
+            Date of Birth
+            <input name="date" type="date" placeholder="Date of birth" data-value="dobString" data-on-change="initTimeline();name=name??'';saveLifeEvents(dobString, name, lifeEvents)"/>
+          </label>
+          <label>
+            Name
+            <input type="text" name="name" placeholder="Name" data-value="name" data-on-change="saveLifeEvents(dobString, name, lifeEvents)"/>
+          </label>
+        </fieldset>
+        <button data-if="dobString!=null" type="button" data-action="openDialog=true;editRow.date=dobString;editRow.emoji=editRow.title=''">Add Event</button>
+        <button data-if="dobString!=null" type="button" data-action="if (confirm('Remove all data?')){dobString=null;name=null;lifeEvents=[];localStorage.removeItem('lifeEvents')}">Start over</button>
+      </form>
       <table>
         <tbody data-for="event:sortedEntries(lifeEvents)">
           <tr data-if="editRow.index!==event.index">
             <td data-text="${event.item[0]}"></td>
-            <td colspan="2" data-text="${event.item[1]}"></td>
-            <td>
+            <td style="width:100%" colspan="2" data-text="${event.item[1]}"></td>
+            <td class="last">
               <button
                 data-action="editRow.index=event.index;editRow.oldDate=editRow.date=event.item[0];editRow.title=event.item[1];editRow.emoji=''">✏️</button>
               <button
@@ -220,8 +241,8 @@
                 <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
               </select>
             </td>
-            <td><input type="text" data-value="editRow.title" /></td>
-            <td>
+            <td style="width:100%"><input type="text" data-value="editRow.title" placeholder="Enter event title"/></td>
+            <td class="last">
               <button
                 data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.emoji+editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate];saveLifeEvents(dobString, name, lifeEvents)}">💾</button>
               <button data-action="editRow.index=-1">✖️</button>
@@ -232,7 +253,7 @@
     </details>
   </header>
   <main>
-    <section xdata-interval="10:counter<myweeks.length:counter++" data-for="w:myweeks">
+    <section data-if="dobString!=null" xdata-interval="10:counter<myweeks.length:counter++" data-for="w:myweeks">
       <div data-class="event:hasEvent(w, myweeks)"
         data-action="openDialog=true;editRow.date=date2String(w.item);editRow.emoji=editRow.title=''"
         data-attr-class="week d${parseInt(calculateAge(dob, endWeek(w.item))/10)}"
@@ -240,9 +261,8 @@
     </section>
   </main>
   <footer>
-    <button type="button"
+    <button data-if="dobString!=null" type="button"
       data-action="navigator.clipboard.writeText(location.origin+location.pathname+'?'+generateUrl(dobString, name, lifeEvents))">Share</button>
-    <!-- <input type="date" data-value="aDate"/><span data-text="${aDate}-${typeof aDate}-${new Date(aDate).toLocaleDateString(undefined,{ timeZone: 'UTC'})}"></span> -->
   </footer>
   <dialog data-attr-open="openDialog">
     <article>
@@ -251,31 +271,30 @@
         Enter a new event by specifying a date and a title below:
       </p>
       <form>
-        <form>
-          <fieldset>
-            <label>
-              Event Date
-              <input name="date" type="date" placeholder="Event date" data-value="editRow.date" />
-            </label>
-            <label>
-              Event Emoji
-              <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)">
-                <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
-              </select>
-            </label>
-            <label>
-              Event Name
-              <input type="text" name="title" placeholder="Event title" data-value="editRow.title" />
-            </label>
-          </fieldset>
-          <form>
-            <footer>
-              <button type="button" class="secondary" data-action="openDialog=false">
-                Cancel
-              </button>
-              <button type="button"
-                data-action="true:lifeEvents[editRow.date]=(editRow.emoji==''?'':editRow.emoji+' ')+editRow.title;saveLifeEvents(dobString, name, lifeEvents);openDialog=false">Confirm</button>
-            </footer>
+        <fieldset>
+          <label>
+            Event Date
+            <input name="date" type="date" placeholder="Event date" data-value="editRow.date" />
+          </label>
+          <label>
+            Event Emoji
+            <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)">
+              <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
+            </select>
+          </label>
+          <label>
+            Event Name
+            <input type="text" name="title" placeholder="Event title" data-value="editRow.title" />
+          </label>
+        </fieldset>
+        <footer>
+          <button type="button" class="secondary" data-action="openDialog=false">
+            Cancel
+          </button>
+          <button type="button"
+            data-action="true:lifeEvents[editRow.date]=(editRow.emoji==''?'':editRow.emoji+' ')+editRow.title;saveLifeEvents(dobString, name, lifeEvents);openDialog=false">Confirm</button>
+        </footer>
+      </form>
     </article>
   </dialog>
 </body>
@@ -365,58 +384,49 @@
     }
   }
   else {
-    dobString = '1965-01-13'
-    name = 'Henry van den Broek';
-    lifeEvents = {
-      '1965-01-13': 'Amsterdam',
-      '1966-09-06': '🍼 Eric',
-      '1968-02-19': '🍼 Saskia & Ingrid',
-      '1969-01-06': '🚚 Leiderdorp',
-      '1970-11-29': '🍼 Marjon',
-      '1972-01-01': '🚚 Woerdens Verlaat',
-      '1972-07-01': '🚚 Oudega',
-      '1977-01-07': '🚚 Stieltjes kanaal',
-      '1980-01-07': '🚚 Dalen',
-      '1983-08-31': '👩🏻‍🎓 College',
-      '1983-09-01': '🚚 Enschede',
-      '1984-09-01': '🚚 Groningen',
-      '1988-09-01': '🚚 Utrecht',
-      '1989-11-25': '❤️ Paula',
-      '1990-01-01': '🎓 Graduated',
-      '1990-02-01': '👨🏻‍✈️ Military service',
-      '1990-02-02': '🚚 Den Haag',
-      '1991-04-01': '💻 First Job',
-      '1991-07-01': '⛴ Woonschip Corrie',
-      '1991-08-13': '🍼 Florence',
-      '1992-02-01': '🚚 Vianen',
-      '1992-11-01': '💻 IRI Software',
-      '1994-03-01': '🚚 Rotterdam',
-      '1994-10-07': '🍼 Julius',
-      '1995-06-01': '💻 Oracle',
-      '1996-06-23': '🍼 Margot',
-      '1998-04-22': '💍 Paula',
-      '1998-06-23': '🚚 USA Lexington',
-      '1999-06-01': '🚚 Billerica',
-      '2006-08-01': '🚚 Lexington',
-      '2015-08-15': '🚴 PBP',
-      '2019-08-15': '🚴 PBP',
-      '2020-03-12': '😷 Covid',
-      '2020-03-13': '🚚 Conway',
-      '2022-01-10': '🌄 Retired',
-      '2022-08-22': '🍼 Isabella',
-      '2023-12-08': '🍼 Cecilia',
-    }
+    // dobString = '1965-01-13'
+    // name = 'Henry van den Broek';
+    // lifeEvents = {
+    //   '1965-01-13': 'Amsterdam',
+    //   '1966-09-06': '🍼 Eric',
+    //   '1968-02-19': '🍼 Saskia & Ingrid',
+    //   '1969-01-06': '🚚 Leiderdorp',
+    //   '1970-11-29': '🍼 Marjon',
+    //   '1972-01-01': '🚚 Woerdens Verlaat',
+    //   '1972-07-01': '🚚 Oudega',
+    //   '1977-01-07': '🚚 Stieltjes kanaal',
+    //   '1980-01-07': '🚚 Dalen',
+    //   '1983-08-31': '👩🏻‍🎓 College',
+    //   '1983-09-01': '🚚 Enschede',
+    //   '1984-09-01': '🚚 Groningen',
+    //   '1988-09-01': '🚚 Utrecht',
+    //   '1989-11-25': '❤️ Paula',
+    //   '1990-01-01': '🎓 Graduated',
+    //   '1990-02-01': '👨🏻‍✈️ Military service',
+    //   '1990-02-02': '🚚 Den Haag',
+    //   '1991-04-01': '💻 First Job',
+    //   '1991-07-01': '⛴ Woonschip Corrie',
+    //   '1991-08-13': '🍼 Florence',
+    //   '1992-02-01': '🚚 Vianen',
+    //   '1992-11-01': '💻 IRI Software',
+    //   '1994-03-01': '🚚 Rotterdam',
+    //   '1994-10-07': '🍼 Julius',
+    //   '1995-06-01': '💻 Oracle',
+    //   '1996-06-23': '🍼 Margot',
+    //   '1998-04-22': '💍 Paula',
+    //   '1998-06-23': '🚚 USA Lexington',
+    //   '1999-06-01': '🚚 Billerica',
+    //   '2006-08-01': '🚚 Lexington',
+    //   '2015-08-15': '🚴 PBP',
+    //   '2019-08-15': '🚴 PBP',
+    //   '2020-03-12': '😷 Covid',
+    //   '2020-03-13': '🚚 Conway',
+    //   '2022-01-10': '🌄 Retired',
+    //   '2022-08-22': '🍼 Isabella',
+    //   '2023-12-08': '🍼 Cecilia',
+    // }
+    lifeEvents =[]
   }
-  //   searchParams = null
-
-
-
-  let dob = new Date(dobString);
-  let yearBorn = dob.getFullYear();
-  let monthBorn = dob.getMonth();
-  let dateBorn = dob.getDate();
-
-  const myweeks = getWeekDates(dob);
   let counter = 0;
   const emojiSelect = {
     '': 'No Emoji',
@@ -439,8 +449,21 @@
     '❄️': 'Vacation',
     '🏖️': 'Vacation'
   }
+  let dob = new Date(dobString);
+  let yearBorn = dob.getFullYear();
+  let monthBorn = dob.getMonth();
+  let dateBorn = dob.getDate();
 
+  let myweeks = getWeekDates(dob);
 
+  function initTimeline() {
+    dob = new Date(dobString);
+    yearBorn = dob.getFullYear();
+    monthBorn = dob.getMonth();
+    dateBorn = dob.getDate();
+
+    myweeks = getWeekDates(dob);
+  }
   function getEvent(weekObject, weeks) {
 
     const events = [];
