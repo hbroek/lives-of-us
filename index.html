@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="An overview of your life in weeks">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.pumpkin.min.css">
+  
+  <title>An overview of your life in weeks</title>
+  <style>
+    :root {
+      /*** gray ***/
+      --uchu-light-gray-raw: 95.57% 0.003 286.35;
+      --uchu-light-gray: oklch(var(--uchu-light-gray-raw));
+
+      --uchu-gray-raw: 84.68% 0.002 197.12;
+      --uchu-gray: oklch(var(--uchu-gray-raw));
+
+      --uchu-dark-gray-raw: 63.12% 0.004 219.55;
+      --uchu-dark-gray: oklch(var(--uchu-dark-gray-raw));
+
+      /*** red ***/
+      --uchu-light-red-raw: 88.98% 0.052 3.28;
+      --uchu-light-red: oklch(var(--uchu-light-red-raw));
+
+      --uchu-red-raw: 62.73% 0.209 12.37;
+      --uchu-red: oklch(var(--uchu-red-raw));
+
+      --uchu-dark-red-raw: 45.8% 0.177 17.7;
+      --uchu-dark-red: oklch(var(--uchu-dark-red-raw));
+
+      /*** pink ***/
+      --uchu-light-pink-raw: 95.8% 0.023 354.27;
+      --uchu-light-pink: oklch(var(--uchu-light-pink-raw));
+
+      --uchu-pink-raw: 85.43% 0.09 354.1;
+      --uchu-pink: oklch(var(--uchu-pink-raw));
+
+      --uchu-dark-pink-raw: 64.11% 0.084 353.91;
+      --uchu-dark-pink: oklch(var(--uchu-dark-pink-raw));
+
+      /*** purple ***/
+      --uchu-light-purple-raw: 89.1% 0.046 305.24;
+      --uchu-light-purple: oklch(var(--uchu-light-purple-raw));
+
+      --uchu-purple-raw: 58.47% 0.181 302.06;
+      --uchu-purple: oklch(var(--uchu-purple-raw));
+
+      --uchu-dark-purple-raw: 39.46% 0.164 298.29;
+      --uchu-dark-purple: oklch(var(--uchu-dark-purple-raw));
+
+      /*** blue ***/
+      --uchu-light-blue-raw: 89.66% 0.046 260.67;
+      --uchu-light-blue: oklch(var(--uchu-light-blue-raw));
+
+      --uchu-blue-raw: 62.39% 0.181 258.33;
+      --uchu-blue: oklch(var(--uchu-blue-raw));
+
+      --uchu-dark-blue-raw: 43.48% 0.17 260.2;
+      --uchu-dark-blue: oklch(var(--uchu-dark-blue-raw));
+
+      /*** green ***/
+      --uchu-light-green-raw: 93.96% 0.05 148.74;
+      --uchu-light-green: oklch(var(--uchu-light-green-raw));
+
+      --uchu-green-raw: 79.33% 0.179 145.62;
+      --uchu-green: oklch(var(--uchu-green-raw));
+
+      --uchu-dark-green-raw: 58.83% 0.158 145.05;
+      --uchu-dark-green: oklch(var(--uchu-dark-green-raw));
+
+      /*** yellow ***/
+      --uchu-light-yellow-raw: 97.05% 0.039 91.2;
+      --uchu-light-yellow: oklch(var(--uchu-light-yellow-raw));
+
+      --uchu-yellow-raw: 90.92% 0.125 92.56;
+      --uchu-yellow: oklch(var(--uchu-yellow-raw));
+
+      --uchu-dark-yellow-raw: 69.14% 0.109 91.04;
+      --uchu-dark-yellow: oklch(var(--uchu-dark-yellow-raw));
+
+      /*** orange ***/
+      --uchu-light-orange-raw: 93.83% 0.037 56.93;
+      --uchu-light-orange: oklch(var(--uchu-light-orange-raw));
+
+      --uchu-orange-raw: 78.75% 0.14163582809066333 54.32911089172009;
+      --uchu-orange: oklch(var(--uchu-orange-raw));
+
+      --uchu-dark-orange-raw: 58.28% 0.128 52.2;
+      --uchu-dark-orange: oklch(var(--uchu-dark-orange-raw));
+
+      /*** general ***/
+      --uchu-yang-raw: 99.4% 0 0;
+      --uchu-yang: oklch(var(--uchu-yang-raw));
+
+      --uchu-light-yin-raw: 91.87% 0.003 264.54;
+      --uchu-light-yin: oklch(var(--uchu-light-yin-raw));
+
+      --uchu-yin-raw: 14.38% 0.007 256.88;
+      --uchu-yin: oklch(var(--uchu-yin-raw));
+    }
+
+    .week {
+      display: inline-grid;
+      min-width: 0.5em;
+      min-height: 1.5em;
+      border: 1px solid var(--uchu-red);
+      ;
+      background: var(--uchu-light-red);
+      border-radius: 0.25em;
+      margin: 0.125em;
+      padding: 0 0.125em;
+      color: var(--uchu-dark-red);
+      place-content: center;
+    }
+
+    .event:hover {
+      z-index: 99;
+      transition: 0.3s;
+      transform: scale(2);
+    }
+
+    .event {
+      transition: 0.5s;
+      transform: scale(1);
+
+      @starting-style {
+        transform: scale(3);
+      }
+    }
+
+    .d0 {
+      background: var(--uchu-light-pink);
+      border-color: var(--uchu-pink);
+      color: var(--uchu-dark-pink);
+    }
+
+    .d1 {
+      background: var(--uchu-light-red);
+      border-color: var(--uchu-red);
+      color: var(--uchu-dark-red);
+    }
+
+    .d2 {
+      background: var(--uchu-light-purple);
+      border-color: var(--uchu-purple);
+      color: var(--uchu-dark-purple);
+    }
+
+    .d3 {
+      background: var(--uchu-light-blue);
+      border-color: var(--uchu-blue);
+      color: var(--uchu-dark-blue);
+    }
+
+    .d4 {
+      background: var(--uchu-light-green);
+      border-color: var(--uchu-green);
+      color: var(--uchu-dark-green);
+    }
+
+    .d5 {
+      background: var(--uchu-light-yellow);
+      border-color: var(--uchu-yellow);
+      color: var(--uchu-dark-yellow);
+    }
+
+    .d6 {
+      background: var(--uchu-light-orange);
+      border-color: var(--uchu-orange);
+      color: var(--uchu-dark-orange);
+    }
+
+    .d7 {
+      background: var(--uchu-light-yin);
+      border-color: var(--uchu-yin);
+      color: var(--uchu-dark-yin);
+    }
+
+    section {
+      display: flex;
+      justify-content: start;
+      flex-wrap: wrap;
+    }
+
+    summary {
+      font-size: 3em;
+      line-height: 3em;
+    }
+
+    input,
+    select {
+      margin-bottom: initial !important;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <details>
+      <summary data-text="${name}'s life in weeks"></summary>
+      <table>
+        <tbody data-for="event:sortedEntries(lifeEvents)">
+          <tr data-if="editRow.index!==event.index">
+            <td data-text="${event.item[0]}"></td>
+            <td colspan="2" data-text="${event.item[1]}"></td>
+            <td>
+              <button
+                data-action="editRow.index=event.index;editRow.oldDate=editRow.date=event.item[0];editRow.title=event.item[1];editRow.emoji=''">✏️</button>
+              <button
+                data-action="if (confirm(`Remove event ${event.item[0]}-${event.item[1]}`)){delete lifeEvents[event.item[0]];saveLifeEvents(dobString, name, lifeEvents)}">🗑️</button>
+            </td>
+          </tr>
+          <tr data-if="editRow.index===event.index">
+            <td><input type="date" data-value="editRow.date" /></td>
+            <td>
+              <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)">
+                <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
+              </select>
+            </td>
+            <td><input type="text" data-value="editRow.title" /></td>
+            <td>
+              <button
+                data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.emoji+editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate];saveLifeEvents(dobString, name, lifeEvents)}">💾</button>
+              <button data-action="editRow.index=-1">✖️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </details>
+  </header>
+  <main>
+    <section xdata-interval="10:counter<myweeks.length:counter++" data-for="w:myweeks">
+      <div data-class="event:hasEvent(w, myweeks)"
+        data-action="openDialog=true;editRow.date=date2String(w.item);editRow.emoji=editRow.title=''"
+        data-attr-class="week d${parseInt(calculateAge(dob, endWeek(w.item))/10)}"
+        data-attr-title="${w.item.toLocaleDateString()}" data-text="${getEvent(w, myweeks)}"></div>
+    </section>
+  </main>
+  <footer>
+    <button type="button"
+      data-action="navigator.clipboard.writeText(location.origin+location.pathname+'?'+generateUrl(dobString, name, lifeEvents))">Share</button>
+    <!-- <input type="date" data-value="aDate"/><span data-text="${aDate}-${typeof aDate}-${new Date(aDate).toLocaleDateString(undefined,{ timeZone: 'UTC'})}"></span> -->
+  </footer>
+  <dialog data-attr-open="openDialog">
+    <article>
+      <h2>Add Event</h2>
+      <p>
+        Enter a new event by specifying a date and a title below:
+      </p>
+      <form>
+        <form>
+          <fieldset>
+            <label>
+              Event Date
+              <input name="date" type="date" placeholder="Event date" data-value="editRow.date" />
+            </label>
+            <label>
+              Event Emoji
+              <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)">
+                <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
+              </select>
+            </label>
+            <label>
+              Event Name
+              <input type="text" name="title" placeholder="Event title" data-value="editRow.title" />
+            </label>
+          </fieldset>
+          <form>
+            <footer>
+              <button type="button" class="secondary" data-action="openDialog=false">
+                Cancel
+              </button>
+              <button type="button"
+                data-action="true:lifeEvents[editRow.date]=(editRow.emoji==''?'':editRow.emoji+' ')+editRow.title;saveLifeEvents(dobString, name, lifeEvents);openDialog=false">Confirm</button>
+            </footer>
+    </article>
+  </dialog>
+</body>
+<script>
+
+
+  function date2String(date) {
+    return `${date.getFullYear()}-${("0" + (date.getMonth() + 1)).slice(-2)}-${('0' + date.getDate()).slice(-2)}`
+  }
+  function sortedEntries(object, column = 0) {
+    return Object.entries(object).sort((a, b) => a[column] > b[column] ? 1 : -1)
+  }
+  function getWeekDates(startDate) {
+    // Convert start date string to Date object
+    const start = new Date(startDate);
+
+    // Initialize current date as start date
+    let current = new Date(start);
+
+    // Initialize array to store week dates
+    const weekDates = [];
+
+    // Loop until current date exceeds today's date
+    while (current <= new Date()) {
+      // Append current date to week dates array
+      weekDates.push(new Date(current));
+
+      // Increment current date by 7 days
+      current.setDate(current.getDate() + 7);
+    }
+
+    return weekDates;
+  }
+
+  function saveLifeEvents(dob, name, eventsObject) {
+    localStorage.setItem('lifeEvents', generateUrl(dob, name, eventsObject));
+    location=location.origin+location.pathname; //Remove parameters as state is now stored locally
+  }
+
+  const editRow = {
+    index: -1,
+    date: '',
+    title: ''
+  }
+
+  let openDialog = false;
+
+  let dobString = null;
+  let name = null;
+  let lifeEvents = null;
+
+  let searchParams = new URLSearchParams(location.search)
+  if (searchParams.get('dob') !== null) {
+    dobString = searchParams.get('dob');
+    name = decodeURIComponent(searchParams.get('name'));
+    lifeEvents = {};
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    for (const [date, title] of searchParams) {
+      try {
+        if (regex.test(date)) {
+          lifeEvents[date] = decodeURIComponent(title);
+        }
+      }
+      catch (error) {
+        console.log(error)
+        // ignore invalid date
+      }
+    }
+  }
+  else if (localStorage.getItem('lifeEvents')!==null) {
+    const saveEvents = localStorage.getItem('lifeEvents');
+    const savedParams =  new URLSearchParams(saveEvents)
+    dobString = savedParams.get('dob');
+    name = decodeURIComponent(savedParams.get('name'));
+    lifeEvents = {};
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    for (const [date, title] of savedParams) {
+      try {
+        if (regex.test(date)) {
+          lifeEvents[date] = decodeURIComponent(title);
+        }
+      }
+      catch (error) {
+        console.log(error)
+        // ignore invalid date
+      }
+    }
+  }
+  else {
+    dobString = '1965-01-13'
+    name = 'Henry van den Broek';
+    lifeEvents = {
+      '1965-01-13': 'Amsterdam',
+      '1966-09-06': '🍼 Eric',
+      '1968-02-19': '🍼 Saskia & Ingrid',
+      '1969-01-06': '🚚 Leiderdorp',
+      '1970-11-29': '🍼 Marjon',
+      '1972-01-01': '🚚 Woerdens Verlaat',
+      '1972-07-01': '🚚 Oudega',
+      '1977-01-07': '🚚 Stieltjes kanaal',
+      '1980-01-07': '🚚 Dalen',
+      '1983-08-31': '👩🏻‍🎓 College',
+      '1983-09-01': '🚚 Enschede',
+      '1984-09-01': '🚚 Groningen',
+      '1988-09-01': '🚚 Utrecht',
+      '1989-11-25': '❤️ Paula',
+      '1990-01-01': '🎓 Graduated',
+      '1990-02-01': '👨🏻‍✈️ Military service',
+      '1990-02-02': '🚚 Den Haag',
+      '1991-04-01': '💻 First Job',
+      '1991-07-01': '⛴ Woonschip Corrie',
+      '1991-08-13': '🍼 Florence',
+      '1992-02-01': '🚚 Vianen',
+      '1992-11-01': '💻 IRI Software',
+      '1994-03-01': '🚚 Rotterdam',
+      '1994-10-07': '🍼 Julius',
+      '1995-06-01': '💻 Oracle',
+      '1996-06-23': '🍼 Margot',
+      '1998-04-22': '💍 Paula',
+      '1998-06-23': '🚚 USA Lexington',
+      '1999-06-01': '🚚 Billerica',
+      '2006-08-01': '🚚 Lexington',
+      '2015-08-15': '🚴 PBP',
+      '2019-08-15': '🚴 PBP',
+      '2020-03-12': '😷 Covid',
+      '2020-03-13': '🚚 Conway',
+      '2022-01-10': '🌄 Retired',
+      '2022-08-22': '🍼 Isabella',
+      '2023-12-08': '🍼 Cecilia',
+    }
+  }
+  //   searchParams = null
+
+
+
+  let dob = new Date(dobString);
+  let yearBorn = dob.getFullYear();
+  let monthBorn = dob.getMonth();
+  let dateBorn = dob.getDate();
+
+  const myweeks = getWeekDates(dob);
+  let counter = 0;
+  const emojiSelect = {
+    '': 'No Emoji',
+    '🍼': 'Birth',
+    '🚚': 'Move',
+    '👩🏻‍🎓': 'College',
+    '👩‍❤️‍👩': 'Fall in love',
+    '🎓': 'Graduation',
+    '👨🏻‍✈️': 'Military service',
+    '💻': 'Job',
+    '👷‍♂️': 'Job',
+    '💍': 'Married / Engaged',
+    '🚴': 'Sports',
+    '🏃‍♂️': 'Sports',
+    '⚽': 'Sports',
+    '🌄': 'Retired',
+    '✝️': 'Funeral',
+    '✈️': 'Travel',
+    '🚄': 'Travel',
+    '❄️': 'Vacation',
+    '🏖️': 'Vacation'
+  }
+
+
+  function getEvent(weekObject, weeks) {
+
+    const events = [];
+
+    const { index, item: week } = weekObject;
+    const startWeek = week.getTime();
+    const endWeek = startWeek + 7 * 24 * 60 * 60 * 1000;
+
+    // Now
+    if (index == weeks.length - 1)
+      events.push('❗');
+
+    //Birth and birthdays
+    if (index == 0)
+      events.push('👶 ' + week.getFullYear())
+    else {
+      const age = week.getFullYear() - yearBorn;
+      if (inWeek(new Date(yearBorn + parseInt(index / 52), monthBorn, dateBorn), week))
+        events.push(`🎂 ${age}`);
+    }
+
+    // Life Events
+    for (const [dateString, event] of Object.entries(lifeEvents)) {
+      const date = new Date(dateString);
+      if (inWeek(date, week)) {
+        events.push(event);
+      }
+    }
+    return events.join(' ')
+  }
+
+  function hasEvent(weekObject, weeks) {
+    return getEvent(weekObject, weeks) != ''
+  }
+
+  function inWeek(date, weekStart) {
+    const dateTime = date.getTime();
+    const weekStartTime = weekStart.getTime();
+    const weekEndTime = weekStartTime + 7 * 24 * 60 * 60 * 1000;
+    return dateTime >= weekStartTime && dateTime < weekEndTime
+  }
+  function endWeek(weekStart) {
+    const weekStartTime = weekStart.getTime();
+    const weekEndTime = weekStartTime + 7 * 24 * 60 * 60 * 1000;
+    return new Date(weekEndTime);
+  }
+  function calculateAge(birthday, today = new Date()) {
+    const birthDate = new Date(birthday);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+    return age;
+  }
+  function generateUrl(dob, name, object) {
+    let urlArray = []
+    urlArray.push(`dob=${encodeURIComponent(dob)}`);
+    urlArray.push(`name=${encodeURIComponent(name)}`);
+    for (event of Object.entries(object)) {
+      urlArray.push(`${event[0]}=${encodeURIComponent(event[1])}`)
+    }
+    return urlArray.join('&');
+  }
+</script>
+<!-- <script src="../src/reken.js"></script> -->
+<script src="https://cdn.jsdelivr.net/gh/hbroek/reken/dist/reken.min.js"></script>
+
+</html>
