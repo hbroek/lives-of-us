@@ -6,9 +6,9 @@
   <meta name="description" content="An overview of your life in weeks">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.pumpkin.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.amber.min.css">
   
-  <title>An overview of your life in weeks</title>
+  <title data-text="${name == null || name === ''?'An overview of your life in weeks':name+'\'s life in weeks'} - Lives of Us">An overview of your life in weeks</title>
   <style>
     :root {
       /*** gray ***/
@@ -100,6 +100,23 @@
 
       --uchu-yin-raw: 14.38% 0.007 256.88;
       --uchu-yin: oklch(var(--uchu-yin-raw));
+    }
+
+    .hero {
+      padding: 0;
+      background-image: linear-gradient(to right, var(--uchu-dark-pink),var(--uchu-dark-red),var(--uchu-dark-purple),var(--uchu-dark-blue),var(--uchu-dark-green),var(--uchu-dark-yellow),var(--uchu-dark-orange));
+      background-image: linear-gradient(to right, rgb(88,132,225),rgb(120,166,90),rgb(255,255,84),rgb(140,26,245),rgb(241,158,56),rgb(234,51,35));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .animate {
+      transition: 0.5s;
+    }
+
+    .big {
+      transform: scale(1.5);
     }
 
     .week {
@@ -206,8 +223,19 @@
 
 <body>
   <header>
-      <h1>Lives of Us
-        <small>- an overview of your life in weeks</small><button type="button" style="float:inline-end;" data-action="isEdit=!isEdit">⚙️</button>
+      <h1><span class="hero">Lives of Us</span>
+        <small>- an overview of your life in weeks</small>
+        <div role="group" style="display:inline !important;float:inline-end;width:unset;">
+          <button data-if="dobString!=null" type="button" data-timer="1500:copied:copied=false;"
+            data-action="navigator.clipboard.writeText(location.origin+location.pathname+'?'+generateUrl(dobString, name, lifeEvents));copied=true"
+            title="Share" 
+            data-text="📋"
+            data-class="big:copied"
+            class="animate"
+          </button>
+          <button type="button" data-action="isEdit=!isEdit">⚙️</button>
+        </button>
+  
       </h1>
       <h2 data-if="name==null||name==''">To start enter your name and date of birth</h2>
       <h2 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h2>
@@ -240,14 +268,14 @@
           <tr data-if="editRow.index===event.index">
             <td><input type="date" data-value="editRow.date" /></td>
             <td>
-              <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)">
+              <select name="emoji" data-value="editRow.emoji" data-for="emoji:sortedEntries(emojiSelect,1)" data-on-change="editRow.title=editRow.emoji+' '+editRow.title">
                 <option data-attr-value="${emoji.item[0]}" data-text="${emoji.item[0]} - ${emoji.item[1]}"></option>
               </select>
             </td>
             <td style="width:100%"><input type="text" data-value="editRow.title" placeholder="Enter event title"/></td>
             <td class="last">
               <button
-                data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.emoji+editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate];saveLifeEvents(dobString, name, lifeEvents)}">💾</button>
+                data-action="editRow.index=-1;lifeEvents[editRow.date]=editRow.title;if (editRow.date!=editRow.oldDate){delete lifeEvents[editRow.oldDate];saveLifeEvents(dobString, name, lifeEvents)}">💾</button>
               <button data-action="editRow.index=-1">✖️</button>
             </td>
           </tr>
@@ -263,8 +291,6 @@
     </section>
   </main>
   <footer>
-    <button data-if="dobString!=null" type="button"
-      data-action="navigator.clipboard.writeText(location.origin+location.pathname+'?'+generateUrl(dobString, name, lifeEvents))">Share</button>
   </footer>
   <dialog data-attr-open="openDialog">
     <article>
@@ -348,6 +374,7 @@
   let name = null;
   let lifeEvents = null;
   let isEdit = false;
+  let copied = false;
 
   let searchParams = new URLSearchParams(location.search)
   if (searchParams.get('dob') !== null) {
@@ -437,7 +464,8 @@
     '🍼': 'Birth',
     '🚚': 'Move',
     '👩🏻‍🎓': 'College',
-    '👩‍❤️‍👩': 'Fall in love',
+    '👩‍❤️‍👩': 'Fall in love / Dating',
+    '👪': 'Family',
     '🎓': 'Graduation',
     '👨🏻‍✈️': 'Military service',
     '💻': 'Job',
