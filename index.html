@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="description" content="An overview of your life in weeks">
+  <meta name="description" content="Visualize Your Life Story. Create a unique timeline of your life with Lives of Us. See your decades unfold in vibrant colors, with every week marked. Celebrate your birthdays and milestones. Reflect on your journey from birth to today">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.amber.min.css">
@@ -104,8 +104,8 @@
 
     .hero {
       padding: 0;
-      background-image: linear-gradient(to right, var(--uchu-dark-pink),var(--uchu-dark-red),var(--uchu-dark-purple),var(--uchu-dark-blue),var(--uchu-dark-green),var(--uchu-dark-yellow),var(--uchu-dark-orange));
-      background-image: linear-gradient(to right, rgb(88,132,225),rgb(120,166,90),rgb(255,255,84),rgb(140,26,245),rgb(241,158,56),rgb(234,51,35));
+      background-image: linear-gradient(to right, var(--uchu-pink),var(--uchu-red),var(--uchu-purple),var(--uchu-blue),var(--uchu-green),var(--uchu-yellow),var(--uchu-orange));
+      /* background-image: linear-gradient(to right, rgb(88,132,225),rgb(120,166,90),rgb(255,255,84),rgb(140,26,245),rgb(241,158,56),rgb(234,51,35)); */
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -120,7 +120,8 @@
     }
 
     .week {
-      display: inline-grid;
+      display: inline-flex;
+      flex-wrap:nowrap;
       min-width: 0.5em;
       min-height: 1.5em;
       border: 1px solid var(--uchu-red);
@@ -131,6 +132,7 @@
       padding: 0 0.125em;
       color: var(--uchu-dark-red);
       place-content: center;
+      text-wrap:nowrap;
     }
 
     .event:hover {
@@ -218,6 +220,12 @@
     td {
       text-wrap: nowrap;
     }
+    .add {
+      opacity:0;
+    }
+    .week:hover > .add {
+      opacity:1;
+    }
   </style>
 </head>
 
@@ -235,8 +243,8 @@
           </button>
           <button type="button" data-action="isEdit=!isEdit">⚙️</button>
         </div>
-  
       </h1>
+      <p>Visualize Your Life Story. Create a unique timeline of your life with Lives of Us. See your decades unfold in vibrant colors, with every week marked. Celebrate your birthdays and milestones. Reflect on your journey from birth to today.</p>
       <h2 data-if="name==null||name==''">To start enter your name and date of birth</h2>
       <h2 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h2>
       <form data-if="isEdit">
@@ -284,10 +292,13 @@
   </header>
   <main>
     <section data-if="dobString!=null" xdata-interval="10:counter<myweeks.length:counter++" data-for="w:myweeks">
-      <div data-class="event:hasEvent(w, myweeks)"
+      <div class="week" data-class="event:hasEvent(w, myweeks)"
         data-action="openDialog=true;editRow.date=date2String(w.item);editRow.emoji=editRow.title=''"
         data-attr-class="week d${parseInt(calculateAge(dob, endWeek(w.item))/10)}"
-        data-attr-title="${w.item.toLocaleDateString()} click to add Event." data-text="${getEvent(w, myweeks)}"></div>
+        data-attr-title="${w.item.toLocaleDateString()} click to add Event.">
+        <span data-text="${getEvent(w, myweeks)}"></span>
+        <span class="add">+</span>
+      </div>
     </section>
   </main>
   <footer>
@@ -327,7 +338,72 @@
     </article>
   </dialog>
 </body>
+<footer>
+  <!-- <a data-attr-href="${downloadCSV(dobString, name, lifeEvents)}">Download CSV</a> -->
+   <!-- <button type="button" data-action="downloadCSV(dobString, name, lifeEvents)">Download CSV</button> -->
+   <hr/>
+   <section style="flex-direction:column;align-items: center;font-size:small;">
+       <div>Color scheme by Uchu <a href="https://uchu.style">Uchu</a>, UI Powered by <a href="https://picocss.com">Pico css</a> and <a href="https://reken.dev">Reken.dev</a>.</div>
+       <div>Copyright <a href="https://www.henryvandenbroek.com/portfolio/index.html">Henry van den Broek, 2025</div>
+   </section>
+</footer>
 <script>
+
+  function downloadCSV(dob, name, object) {
+    let rows = [];
+    rows.push(`dob,${dob}`);
+    rows.push(`name,${name}`);
+    for (const [date, title] of Object.entries(object)) {
+      rows.push(`${date},${title}`);
+    }
+
+    const rowString = rows.join('\n');
+    console.log('row', rowString);
+    bytesToBase64DataUrl(rowString).then((base64)=>{
+    //  location=base64
+    //  window.open(base64, "_blank");
+      showDocument(base64, 'text/csv')
+    })
+  }
+
+  function showDocument(_base64Str, _contentType) {
+      var byte = base64ToArrayBuffer(_base64Str);
+      var blob = new Blob([byte], { type: _contentType });
+      window.open(URL.createObjectURL(blob), "_blank");
+  }
+
+  function showDocument(_base64Str, _contentType) {
+//      var byte = base64ToArrayBuffer(_base64Str);
+      var blob = new Blob([_base64Str], { type: _contentType });
+      window.open(URL.createObjectURL(blob), "_blank");
+  }
+
+
+  function base64ToArrayBuffer(_base64Str) {
+      var binaryString = window.atob(_base64Str);
+      var binaryLen = binaryString.length;
+      var bytes = new Uint8Array(binaryLen);
+      for (var i = 0; i < binaryLen; i++) {
+            var ascii = binaryString.charCodeAt(i);
+            bytes[i] = ascii;
+     }
+     return bytes;
+  }
+
+  async function bytesToBase64DataUrl(bytes, type = "text/csv") {
+    return await new Promise((resolve, reject) => {
+      const reader = Object.assign(new FileReader(), {
+        onload: () => resolve(reader.result),
+        onerror: () => reject(reader.error),
+      });
+      reader.readAsDataURL(new File([bytes], "lives-of-us.csv", { type }));
+    });
+  }
+
+  async function dataUrlToBytes(dataUrl) {
+    const res = await fetch(dataUrl);
+    return new Uint8Array(await res.arrayBuffer());
+  }  
 
 
   function date2String(date) {
@@ -563,7 +639,10 @@
     }
     return urlArray.join('&');
   }
+
 </script>
+
+
 <!-- <script src="../src/reken.js"></script> -->
 <script src="https://cdn.jsdelivr.net/gh/hbroek/reken/dist/reken.min.js"></script>
 
