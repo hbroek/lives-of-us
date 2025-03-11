@@ -7,6 +7,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes'>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.classless.amber.min.css">
+  <link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="/favicon/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="/favicon/site.webmanifest" />
   
   <title data-text="${name == null || name === ''?'An overview of your life in weeks':name+'\'s life in weeks'} - Lives of Us">An overview of your life in weeks</title>
   <style>
@@ -231,9 +236,13 @@
 
 <body>
   <header>
-      <h1><a style="all:unset;cursor:pointer" data-attr-href="${location.origin+location.pathname}"><span class="hero">Lives of Us</span></a>
-        <small>- an overview of your life in weeks</small>
-        <div role="group" style="display:inline !important;float:inline-end;width:unset;">
+      <h1 style="display:flex;align-items:center;justify-content: space-between;">
+        <a style="all:unset;cursor:pointer;display:flex;align-items:center;gap:0.25em;" data-attr-href="${location.origin+location.pathname}">
+          <img style="height:1em;" src="live-of-us.svg"/>
+          <span class="hero">Lives of Us</span></a>
+        </a>
+        <span>An overview of your life in weeks</span>
+        <div role="group" style="justify-self:flex-end;width:unset;">
           <button data-if="dobString!=null" type="button" data-timer="1500:copied:copied=false;"
             data-action="navigator.clipboard.writeText(location.origin+location.pathname+'?'+generateUrl(dobString, name, lifeEvents));copied=true"
             title="Share" 
@@ -241,10 +250,14 @@
             data-class="big:copied"
             class="animate"
           </button>
-          <button type="button" data-action="isEdit=!isEdit">⚙️</button>
+          <button type="button"
+            title="Edit" 
+            data-action="isEdit=!isEdit">
+            ⚙️
+          </button>
         </div>
       </h1>
-      <p>Visualize Your Life Story. Create a unique timeline of your life with Lives of Us. See your decades unfold in vibrant colors, with every week marked. Celebrate your birthdays and milestones. Reflect on your journey from birth to today.</p>
+      <section style="max-width:50%;margin:2rem auto">Visualize Your Life Story. Create a unique timeline of your life with Lives of Us. See your decades unfold in vibrant colors, with every week marked. Celebrate your birthdays and milestones. Reflect on your journey from birth to today.</section>
       <h2 data-if="name==null||name==''">To start enter your name and date of birth</h2>
       <h2 data-if="name!=null&&name!=''" data-text="${name}'s life in weeks"></h2>
       <form data-if="isEdit">

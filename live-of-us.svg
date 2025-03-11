@@ -1,0 +1,22 @@
+<svg width="1024" height="1024" preserveAspectRatio="none" viewBox="0 0 100 100"  xmlns="http://www.w3.org/2000/svg">
+  <circle cx="50" cy="50" r="48" fill="brown" stroke-dasharray="12 2 6 2 8 3" stroke="brown"
+    stroke-width="3"></circle>
+  <circle cx="50" cy="50" r="44" fill="oklch(95.57% 0.003 286.35)" stroke="oklch(95.57% 0.003 286.35)" stroke-width="3">
+  </circle>
+  <g>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="41"
+      stroke="oklch(78.75% 0.14163582809066333 54.32911089172009)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="35"
+      stroke="oklch(90.92% 0.125 92.56)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="29"
+      stroke="oklch(79.33% 0.179 145.62)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="23"
+      stroke="oklch(62.39% 0.181 258.33)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="17"
+      stroke="oklch(58.47% 0.181 302.06)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="11"
+      stroke="oklch(62.73% 0.209 12.37)"></circle>
+    <circle cx="50" cy="50" stroke-width="4" fill="oklch(95.57% 0.003 286.35)" r="5"
+      stroke="oklch(85.43% 0.09 354.1)"></circle>
+  </g>
+</svg>
